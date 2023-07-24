@@ -47,7 +47,7 @@ public class MenuPanel : MonoBehaviour
 
     public void JoinLobby()
     {
-        
+        PhotonNetwork.JoinLobby();
     }
 
     public void Logout()

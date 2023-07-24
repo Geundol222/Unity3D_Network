@@ -58,6 +58,23 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         // TODO : 방에 들어갔을 때 작업
     }
 
+    public override void OnJoinedLobby()
+    {
+        SetActivePanel(Panel.Lobby);
+
+        // TODO : 로비에 들어갔을 때 작업
+    }
+
+    public override void OnLeftLobby()
+    {
+        SetActivePanel(Panel.Menu);
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        lobbyPanel.UpdateRoomList(roomList);
+    }
+
     private void SetActivePanel(Panel panel)
     {
         loginPanel.gameObject?.SetActive(panel == Panel.Login);
