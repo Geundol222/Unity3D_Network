@@ -15,6 +15,11 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField] RoomPanel roomPanel;
     [SerializeField] LobbyPanel lobbyPanel;
 
+    private void Start()
+    {
+        SetActivePanel(Panel.Login);
+    }
+
     public override void OnConnectedToMaster()
     {
         SetActivePanel(Panel.Menu);
@@ -23,6 +28,34 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnDisconnected(DisconnectCause cause)
     {
         SetActivePanel(Panel.Login);
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        SetActivePanel(Panel.Menu);
+        Debug.Log($"Create Room Failed With Error({returnCode}) : {message}");
+        statePanel.AddMessage($"Create Room Failed With Error({returnCode}) : {message}");
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        SetActivePanel(Panel.Menu);
+        Debug.Log($"Join Room Failed With Error({returnCode}) : {message}");
+        statePanel.AddMessage($"Join Room Failed With Error({returnCode}) : {message}");
+    }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        SetActivePanel(Panel.Menu);
+        Debug.Log($"Join Random Room Failed With Error({returnCode}) : {message}");
+        statePanel.AddMessage($"Join Random Room Failed With Error({returnCode}) : {message}");
+    }
+
+    public override void OnJoinedRoom()
+    {
+        SetActivePanel(Panel.Room);
+
+        // TODO : 방에 들어갔을 때 작업
     }
 
     private void SetActivePanel(Panel panel)

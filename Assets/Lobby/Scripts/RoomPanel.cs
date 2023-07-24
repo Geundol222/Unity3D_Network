@@ -16,6 +16,6 @@ public class RoomPanel : MonoBehaviour
 
     public void LeaveRoom()
     {
-        
+        PhotonNetwork.LeaveRoom();
     }
 }
