@@ -33,7 +33,7 @@ public class RoomPanel : MonoBehaviour
 
     public void StartGame()
     {
-        
+        PhotonNetwork.LoadLevel("GameScene");
     }
 
     public void LeaveRoom()

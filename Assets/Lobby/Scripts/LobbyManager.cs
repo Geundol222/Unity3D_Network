@@ -57,11 +57,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.LocalPlayer.SetReady(false);
 
+        PhotonNetwork.AutomaticallySyncScene = true;
         roomPanel.UpdatePlayerList();
     }
 
     public override void OnLeftRoom()
     {
+        PhotonNetwork.AutomaticallySyncScene = false;
         SetActivePanel(Panel.Menu);
     }
 
