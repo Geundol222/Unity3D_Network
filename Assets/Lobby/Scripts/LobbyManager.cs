@@ -10,11 +10,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public enum Panel { Login, Menu, Lobby, Room }
 
     [SerializeField] StatePanel statePanel;
-
     [SerializeField] LoginPanel loginPanel;
     [SerializeField] MenuPanel menuPanel;
     [SerializeField] RoomPanel roomPanel;
     [SerializeField] LobbyPanel lobbyPanel;
+
+    public override void OnConnectedToMaster()
+    {
+        SetActivePanel(Panel.Menu);
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        SetActivePanel(Panel.Login);
+    }
 
     private void SetActivePanel(Panel panel)
     {

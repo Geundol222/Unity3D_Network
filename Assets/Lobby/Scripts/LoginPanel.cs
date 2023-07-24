@@ -13,6 +13,13 @@ public class LoginPanel : MonoBehaviour
 
     public void Login()
     {
-        
+        if (idInputField.text == "")
+        {
+            Debug.Log("Invalid Player ID");
+            return;
+        }
+
+        PhotonNetwork.LocalPlayer.NickName = idInputField.text;
+        PhotonNetwork.ConnectUsingSettings();
     }
 }

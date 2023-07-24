@@ -36,6 +36,6 @@ public class MenuPanel : MonoBehaviour
 
     public void Logout()
     {
-        
+        PhotonNetwork.Disconnect();
     }
 }
