@@ -2,7 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 
 
 public class LobbyManager : MonoBehaviourPunCallbacks
@@ -55,14 +55,39 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         SetActivePanel(Panel.Room);
 
-        // TODO : 방에 들어갔을 때 작업
+        PhotonNetwork.LocalPlayer.SetReady(false);
+
+        roomPanel.UpdatePlayerList();
+    }
+
+    public override void OnLeftRoom()
+    {
+        SetActivePanel(Panel.Menu);
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        roomPanel.UpdatePlayerList();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        roomPanel.UpdatePlayerList();
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        roomPanel.UpdatePlayerList();
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps)
+    {
+        roomPanel.UpdatePlayerList();
     }
 
     public override void OnJoinedLobby()
     {
         SetActivePanel(Panel.Lobby);
-
-        // TODO : 로비에 들어갔을 때 작업
     }
 
     public override void OnLeftLobby()
