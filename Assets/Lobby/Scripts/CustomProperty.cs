@@ -39,4 +39,22 @@ public static class CustomProperty
         property["Load"] = load;
         player.SetCustomProperties(property);
     }
+
+    public static int GetLoadTime(this Room room)
+    {
+        PhotonHastable property = room.CustomProperties;
+
+        if (property.ContainsKey("LoadTime"))
+            return (int)property["LoadTime"];
+        else
+            return -1;
+    }
+
+    public static void SetLoadTime(this Room room, int loadTime)
+    {
+        PhotonHastable property = room.CustomProperties;
+
+        property["LoadTime"] = loadTime;
+        room.SetCustomProperties(property);
+    }
 }
