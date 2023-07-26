@@ -183,6 +183,7 @@ MonoBehaviour:
   accelPower: 5
   rotateSpeed: 90
   maxSpeed: 20
+  fireCoolTime: 0.5
   bulletPrefab: {fileID: -4440931386909962831, guid: 1ec258cb5186dc344ae6fc680b836b58,
     type: 3}
   count: 0

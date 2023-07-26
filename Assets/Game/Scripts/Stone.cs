@@ -27,4 +27,18 @@ public class Stone : MonoBehaviourPun
         if (transform.position.magnitude > 200f)
             PhotonNetwork.Destroy(photonView);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!photonView.IsMine) // == PhotonNetwork.IsMasterClient
+            return;
+
+        if (other.gameObject.name == "Bullet(Clone)")
+        {
+            // 부딪혔을 때 반응
+            // 해당 총알 소유주의 점수 추가
+            other.GetComponent<Bullet>().GetScore();
+            PhotonNetwork.Destroy(photonView);
+        }
+    }
 }

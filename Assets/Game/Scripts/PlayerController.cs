@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,6 +12,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] float accelPower;
     [SerializeField] float rotateSpeed;
     [SerializeField] float maxSpeed;
+    [SerializeField] float fireCoolTime;
 
     [SerializeField] Bullet bulletPrefab;
     [SerializeField] int count;
@@ -18,6 +20,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private PlayerInput playerInput;
     private Rigidbody rigid;
     private Vector2 inputDir;
+    private float lastFireTime = float.MinValue;
 
     private void Awake()
     {
@@ -61,15 +64,28 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void OnFire(InputValue value)
     {
-        photonView.RPC("CreateBullet", RpcTarget.All, transform.position, transform.rotation);
+        photonView.RPC("RequestCreateBullet", RpcTarget.MasterClient, transform.position, transform.rotation);
     }
 
     [PunRPC]
-    private void CreateBullet(Vector3 position, Quaternion rotation, PhotonMessageInfo info)
+    private void RequestCreateBullet(Vector3 position, Quaternion rotation, PhotonMessageInfo info)
     {
-        float lag = (float)(PhotonNetwork.Time - info.SentServerTime);
+        // 마스터클라이언트(서버) 입장에서 판정 진행        
+        if (Time.time < lastFireTime + fireCoolTime)
+            return;
+        lastFireTime = Time.time;
+
+        float sentTime = (float)info.SentServerTime;
+        photonView.RPC("ResultCreateBullet", RpcTarget.AllViaServer, position, rotation, sentTime, info.Sender);
+    }
+
+    [PunRPC]
+    private void ResultCreateBullet(Vector3 position, Quaternion rotation, float sentTime, Player player)
+    {
+        float lag = Mathf.Abs((float)(PhotonNetwork.Time - sentTime));
 
         Bullet bullet = Instantiate(bulletPrefab, position, rotation);
+        bullet.SetPlayer(player);
         bullet.ApplyLag(lag);
     }
 
