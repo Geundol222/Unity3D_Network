@@ -185,6 +185,7 @@ MonoBehaviour:
   maxSpeed: 20
   bulletPrefab: {fileID: -4440931386909962831, guid: 1ec258cb5186dc344ae6fc680b836b58,
     type: 3}
+  count: 0
 --- !u!114 &5454671365423641334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,6 +205,7 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
+  - {fileID: -9158600790195875962}
   - {fileID: -1716180648762440040}
   - {fileID: 149124839123506825}
   sceneViewId: 0

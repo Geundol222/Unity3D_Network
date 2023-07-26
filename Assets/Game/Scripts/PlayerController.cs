@@ -40,8 +40,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         Accelate(inputDir.y);
         Rotate(inputDir.x);
         Camera.main.transform.rotation = Quaternion.Euler(90f, 0, 0);
-
-        count++;
     }
 
     private void Accelate(float input)
@@ -63,13 +61,16 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void OnFire(InputValue value)
     {
-        photonView.RPC("CreateBullet", RpcTarget.All);
+        photonView.RPC("CreateBullet", RpcTarget.All, transform.position, transform.rotation);
     }
 
     [PunRPC]
-    private void CreateBullet()
+    private void CreateBullet(Vector3 position, Quaternion rotation, PhotonMessageInfo info)
     {
-        Instantiate(bulletPrefab, transform.position, transform.rotation);
+        float lag = (float)(PhotonNetwork.Time - info.SentServerTime);
+
+        Bullet bullet = Instantiate(bulletPrefab, position, rotation);
+        bullet.ApplyLag(lag);
     }
 
     private void SetPlayerColor()
