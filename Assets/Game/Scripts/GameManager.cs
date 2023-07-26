@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_Text infoText;
     [SerializeField] float countDownTimer;
+    [SerializeField] float spawnStoneTime;
 
     private void Start()
     {
@@ -51,6 +52,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel("LobbyScene");
     }
 
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        if (PhotonNetwork.IsMasterClient)
+            StartCoroutine(SpawnStoneRoutine());
+    }
+
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps)
     {
         if (changedProps.ContainsKey("Load"))
@@ -64,7 +71,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             // 일부 플레이어 로딩 완료
             else
             {
-                // TODO : 다른 플레이어가 로딩 될때까지 대기
                 Debug.Log($"Wait Players {PlayerLoadCount()} / {PhotonNetwork.PlayerList.Length}");
                 infoText.text = $"Wait Players {PlayerLoadCount()} / {PhotonNetwork.PlayerList.Length}";
             }
@@ -109,6 +115,27 @@ public class GameManager : MonoBehaviourPunCallbacks
         Quaternion rotation = Quaternion.Euler(0.0f, angularStart, 0.0f);
 
         PhotonNetwork.Instantiate("Player", position, rotation);
+
+        if (PhotonNetwork.IsMasterClient)
+            StartCoroutine(SpawnStoneRoutine());
+    }
+
+    IEnumerator SpawnStoneRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(spawnStoneTime);
+
+            Vector2 direction = Random.insideUnitCircle.normalized;
+            Vector3 position = new Vector3(direction.x, 0, direction.y) * 200f;
+
+            Vector3 force = -position.normalized * 30f + new Vector3(Random.Range(-10f, 10f), 0, Random.Range(-10f, 10f));
+            Vector3 torque = Random.insideUnitSphere * Random.Range(1f, 3f);
+
+            object[] instantiateData = { force, torque };
+
+            PhotonNetwork.InstantiateRoomObject("LargeStone", position, Quaternion.identity, 0, instantiateData);
+        }
     }
 
     IEnumerator DebugGameSetupDelay()
